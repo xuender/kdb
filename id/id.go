@@ -2,6 +2,8 @@ package id
 
 import (
 	"strconv"
+
+	"github.com/xuender/kit/types"
 )
 
 // nolint: gochecknoglobals
@@ -25,6 +27,15 @@ func New() ID {
 
 func SetDefault(worker Worker) {
 	_default = worker
+}
+
+func Parse(str string) (ID, error) {
+	id, err := types.ParseInteger[uint](str)
+	if err == nil {
+		return ID(id), nil
+	}
+
+	return 0, err
 }
 
 func (p ID) String() string {

@@ -28,3 +28,12 @@ func ExampleID_String() {
 	// Output:
 	// 11456000074
 }
+
+func ExampleParse() {
+	fmt.Println(id.Parse("11456000074"))
+	fmt.Println(id.Parse("a"))
+
+	// Output:
+	// 11456000074 <nil>
+	// 0 strconv.ParseUint: parsing "a": invalid syntax
+}
