@@ -12,7 +12,7 @@ import (
 func TestIdWorder_ID(t *testing.T) {
 	t.Parallel()
 
-	const max = 1_000
+	const max = 10_000
 
 	ass := assert.New(t)
 	worker := kdb.NewID()
