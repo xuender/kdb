@@ -20,8 +20,13 @@ func init() {
 // 4 位服务器代码(16个).
 type ID uint64
 
-// ID 返回不重复的ID.
-func New() ID {
+// NewID 返回不重复的ID.
+func NewID() ID {
+	return ID(_default.Next())
+}
+
+// New 返回不重复的uint64.
+func New() uint64 {
 	return _default.Next()
 }
 

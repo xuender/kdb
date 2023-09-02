@@ -6,7 +6,7 @@ import (
 )
 
 type Worker interface {
-	Next() ID
+	Next() uint64
 }
 
 // worker 序号生成.
@@ -25,7 +25,7 @@ func NewWorker(machine uint8) Worker {
 	}
 }
 
-func (p *worker) Next() ID {
+func (p *worker) Next() uint64 {
 	p.mutex.Lock()
 	defer p.mutex.Unlock()
 
@@ -39,5 +39,5 @@ func (p *worker) Next() ID {
 	p.serial++
 	p.stamp = now
 
-	return ID(ret | p.machine)
+	return ret | p.machine
 }

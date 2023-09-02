@@ -6,7 +6,7 @@ import (
 )
 
 type IDModel struct {
-	ID        id.ID          `gorm:"primarykey" json:"id"`
+	ID        uint64         `gorm:"primarykey" json:"id"`
 	DeletedAt gorm.DeletedAt `gorm:"index"      json:"-"`
 	CreatedAt Msec           `json:"ca"`
 	UpdatedAt Msec           `json:"ua"`
