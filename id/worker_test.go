@@ -14,7 +14,7 @@ func TestIdWorker_Next(t *testing.T) {
 
 	ass := assert.New(t)
 	worker := id.NewWorker(0)
-	ids := make([]id.ID, max)
+	ids := make([]uint64, max)
 
 	for i := 0; i < max; i++ {
 		ids[i] = worker.Next()
