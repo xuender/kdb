@@ -8,6 +8,10 @@ import (
 
 type Msec time.Time
 
+func (p Msec) Milli() int64 {
+	return time.Time(p).UnixMilli()
+}
+
 func (p Msec) MarshalJSON() ([]byte, error) {
 	msec := time.Time(p)
 	if msec.IsZero() {
