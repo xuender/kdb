@@ -7,7 +7,7 @@ import (
 	"encoding/json"
 	"reflect"
 
-	"github.com/gogo/protobuf/proto"
+	"google.golang.org/protobuf/proto"
 )
 
 func Marshal(data any) ([]byte, error) {
@@ -16,14 +16,14 @@ func Marshal(data any) ([]byte, error) {
 		return value, nil
 	case string:
 		return []byte(value), nil
-	case json.Marshaler:
-		return value.MarshalJSON()
-	case proto.Message:
-		return proto.Marshal(value)
 	case int:
 		return Key(int64(value)), nil
 	case uint:
 		return Key(uint64(value)), nil
+	case proto.Message:
+		return proto.Marshal(value)
+	case json.Marshaler:
+		return value.MarshalJSON()
 	default:
 		buf := &bytes.Buffer{}
 		if binary.Write(buf, binary.BigEndian, data) == nil {
@@ -36,10 +36,27 @@ func Marshal(data any) ([]byte, error) {
 	}
 }
 
-func Unmarshal[V any](data []byte, value V) error {
-	ret := new(V)
+var (
+	_messageType = reflect.TypeOf((*proto.Message)(nil)).Elem()
+	_jsonType    = reflect.TypeOf((*json.Unmarshaler)(nil)).Elem()
+)
 
-	switch val := any(*ret).(type) {
+func Unmarshal[V any](data []byte, value V) error {
+	valValue := reflect.ValueOf(value)
+	switch {
+	case valValue.Type().Implements(_messageType):
+		val := valValue.Interface().(proto.Message)
+
+		return proto.Unmarshal(data, val)
+	case valValue.Type().Implements(_jsonType):
+		val := valValue.Interface().(json.Unmarshaler)
+
+		return val.UnmarshalJSON(data)
+	}
+
+	var ret V
+
+	switch val := any(ret).(type) {
 	case *string:
 		reflect.ValueOf(value).Elem().SetString(string(data))
 
@@ -56,16 +73,6 @@ func Unmarshal[V any](data []byte, value V) error {
 		reflect.ValueOf(value).Elem().SetUint(ToKey[uint64](data))
 
 		return nil
-	case json.Unmarshaler:
-		err := val.UnmarshalJSON(data)
-		reflect.ValueOf(value).Elem().Set(reflect.ValueOf(val))
-
-		return err
-	case proto.Message:
-		err := proto.Unmarshal(data, val)
-		reflect.ValueOf(value).Elem().Set(reflect.ValueOf(val))
-
-		return err
 	default:
 		pass(val)
 

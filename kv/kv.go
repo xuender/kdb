@@ -1,6 +1,8 @@
 package kv
 
 import (
+	"reflect"
+
 	"github.com/cockroachdb/pebble"
 	"github.com/samber/lo"
 )
@@ -24,6 +26,18 @@ func (p *KV[K, V]) GetItem(key K) (V, bool) {
 	}
 
 	var ret V
+
+	retType := reflect.TypeOf(ret)
+	if retType.Kind() == reflect.Pointer {
+		retType = retType.Elem()
+	}
+
+	if retType.Kind() == reflect.Struct {
+		val := reflect.New(retType).Interface()
+		lo.Must0(Unmarshal(data, val))
+
+		return val.(V), true
+	}
 
 	if err == nil {
 		lo.Must0(Unmarshal(data, &ret))
