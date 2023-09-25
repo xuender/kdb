@@ -12,7 +12,11 @@ type KeyType interface {
 	constraints.Integer | constraints.Float | bool | string | []byte
 }
 
-func Key[K KeyType](key K) []byte {
+func Key[K KeyType](key K, prefix ...byte) []byte {
+	return append(prefix, keys(key)...)
+}
+
+func keys[K KeyType](key K) []byte {
 	switch value := any(key).(type) {
 	case []byte:
 		return value
@@ -30,7 +34,15 @@ func Key[K KeyType](key K) []byte {
 	return buf.Bytes()
 }
 
-func ToKey[K KeyType](data []byte) K {
+func ToKey[K KeyType](data []byte, prefix ...byte) K {
+	if bytes.HasPrefix(data, prefix) {
+		return toKey[K](data[len(prefix):])
+	}
+
+	return toKey[K](data)
+}
+
+func toKey[K KeyType](data []byte) K {
 	ret := new(K)
 
 	switch value := any(*ret).(type) {

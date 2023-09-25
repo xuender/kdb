@@ -11,6 +11,7 @@ func TestKey(t *testing.T) {
 	t.Parallel()
 
 	ass := assert.New(t)
+	ass.Equal([]byte{1, 2, 1}, kv.Key(true, 1, 2))
 	ass.Equal([]byte{1}, kv.Key(true))
 	ass.Equal([]byte{1}, kv.Key([]byte{1}))
 	ass.Equal([]byte{0x40, 0x41, 0, 0, 0, 0, 0, 0}, kv.Key(float64(34)))
@@ -29,4 +30,5 @@ func TestToKey(t *testing.T) {
 	ass.Equal(int(34), kv.ToKey[int]([]byte{0, 0, 0, 0, 0, 0, 0, 0x22}))
 	ass.Equal(uint(34), kv.ToKey[uint]([]byte{0, 0, 0, 0, 0, 0, 0, 0x22}))
 	ass.Equal("aa", kv.ToKey[string]([]byte{0x61, 0x61}))
+	ass.Equal("aa", kv.ToKey[string]([]byte{1, 2, 0x61, 0x61}, 1, 2))
 }
