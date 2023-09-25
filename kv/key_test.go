@@ -12,6 +12,7 @@ func TestKey(t *testing.T) {
 
 	ass := assert.New(t)
 	ass.Equal([]byte{1}, kv.Key(true))
+	ass.Equal([]byte{1}, kv.Key([]byte{1}))
 	ass.Equal([]byte{0x40, 0x41, 0, 0, 0, 0, 0, 0}, kv.Key(float64(34)))
 	ass.Equal([]byte{0, 0, 0, 0, 0, 0, 0, 0x22}, kv.Key(int(34)))
 	ass.Equal([]byte{0, 0, 0, 0, 0, 0, 0, 0x22}, kv.Key(uint(34)))
