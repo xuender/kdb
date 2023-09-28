@@ -12,6 +12,10 @@ func (p Msec) Milli() int64 {
 	return time.Time(p).UnixMilli()
 }
 
+func (p Msec) Sec() int64 {
+	return time.Time(p).Unix()
+}
+
 func (p Msec) MarshalJSON() ([]byte, error) {
 	msec := time.Time(p)
 	if msec.IsZero() {
